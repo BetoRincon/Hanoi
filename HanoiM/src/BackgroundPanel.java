@@ -33,7 +33,7 @@ class BackgroundPanel extends JPanel implements MouseMotionListener, MouseListen
 	private  ImageIcon  diskimages[];
 	private  ImageIcon  diskshadows[];
 	private  ImageIcon  scaledBackground;
-	private  Challenges challengeLog = new Challenges();
+//	private  Challenges challengeLog = new Challenges();
 	private  String     challengeString = "(Not Avalilable)";
 	
 	public   BackgroundFrame frame;
@@ -46,7 +46,7 @@ class BackgroundPanel extends JPanel implements MouseMotionListener, MouseListen
 	
 		
 		
-		challengeString = challengeLog.getChallengesString(6);
+		//challengeString = challengeLog.getChallengesString(6);
 		
 		disk        = new ImageIcon[6];
 		diskimages  = new ImageIcon[6];
@@ -94,7 +94,7 @@ class BackgroundPanel extends JPanel implements MouseMotionListener, MouseListen
 	
 	public void refreshDiskImages(int diskCount){
 	
-		challengeString = challengeLog.getChallengesString(diskCount);
+//		challengeString = challengeLog.getChallengesString(diskCount);
 		
 		diskimages = new ImageIcon[diskCount];
 		diskshadows = new ImageIcon[diskCount];
@@ -327,7 +327,7 @@ class BackgroundPanel extends JPanel implements MouseMotionListener, MouseListen
 		wonWindow.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE );
 		wonWindow.setVisible(true); 
 		
-		challengeLog.setChallenges(diskSet.getDiskCount(), diskSet.getNumberOfMoves(), "");
+//		challengeLog.setChallenges(diskSet.getDiskCount(), diskSet.getNumberOfMoves(), "");
 	}
 
 	/* get background width */
