@@ -19,7 +19,8 @@ public class Hanoi
 	  /* center the window in screen */
 	  
 	  Point center = GraphicsEnvironment.getLocalGraphicsEnvironment().getCenterPoint();
-	  bFrame.setBounds(center.x - 600 / 2, center.y - 480 / 2, 600, 480);
+                    bFrame.setExtendedState(bFrame.MAXIMIZED_BOTH);
+                    ;
 
       bFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
       bFrame.setVisible(true);

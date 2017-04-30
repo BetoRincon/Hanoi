@@ -33,7 +33,7 @@ public class BackgroundFrame extends JFrame implements ActionListener
 	public BackgroundFrame()
 	{
 		//titulo de la interfaz
-		super("The Towers of Hanoi");
+		super("Torres de Hanoi");
 		//se declara el menu superior en el cual podemos encontrar la lista de opciones o items mencionados
 		JMenuBar  bar = new JMenuBar();
 		JMenu     gameMenu  = new JMenu("Game");

@@ -39,12 +39,16 @@ class Disk
 	
 	public void refresh(){
 		maxDiskSize = diskSet.getTowerWidth() - 10;
+                /*El máximo tamalo del disco es igual al ancho de la torre -10*/
 		
-		w = (maxDiskSize * size) / diskSet.getDiskCount();
-		h = (maxDiskSize * size) / diskSet.getDiskCount();
+		w = ((maxDiskSize * size) / diskSet.getDiskCount())-20;
+                                    /*El ancho va a ser igual a la talla máxima del disco, por el tamaño del disco
+                dividido en el número de discos y todo eso dividido en dos*/
+		h = ((maxDiskSize * size) / diskSet.getDiskCount());
 		
-		x = (5 + (diskSet.getTowerWidth() / 2) - (w / 2)) + (diskSet.getTowerIndex(this) * diskSet.getTowerWidth());
-		
+		x = (10+ (diskSet.getTowerWidth()/2) -(w/2) ) + (diskSet.getTowerIndex(this) * diskSet.getTowerWidth());
+                                    /*x = (5 + (diskSet.getTowerWidth() / 2) - (w / 2)) + (diskSet.getTowerIndex(this) * diskSet.getTowerWidth());*/
+		          System.out.println("x: "+x);
 		y = -(maxDiskSize - h) / 2;
 		y += (diskSet.getPanelHeight() - w - 10) - (diskSet.getRowPosition(this) - (h / 3));
 		
