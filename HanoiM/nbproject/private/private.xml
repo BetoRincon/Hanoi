@@ -1,21 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
-    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="4">
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="6">
         <file>
             <url>src/BackgroundPanel.java</url>
             <bookmark id="4">
                 <name/>
-                <line>83</line>
+                <line>88</line>
                 <key/>
             </bookmark>
         </file>
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/home/beto/Documentos/AnalisisAlgoritmos/HanoiM/src/Disk.java</file>
-            <file>file:/home/beto/Documentos/AnalisisAlgoritmos/HanoiM/src/DeskSet.java</file>
-            <file>file:/home/beto/Documentos/AnalisisAlgoritmos/HanoiM/src/Hanoi.java</file>
-            <file>file:/home/beto/Documentos/AnalisisAlgoritmos/HanoiM/src/BackgroundPanel.java</file>
+            <file>file:/home/beto/Documentos/AnalisisAlgoritmos/Hanoi/HanoiM/src/Disk.java</file>
+            <file>file:/home/beto/Documentos/AnalisisAlgoritmos/Hanoi/HanoiM/src/BackgroundPanel.java</file>
+            <file>file:/home/beto/Documentos/AnalisisAlgoritmos/Hanoi/HanoiM/src/Hanoi.java</file>
+            <file>file:/home/beto/Documentos/AnalisisAlgoritmos/Hanoi/HanoiM/src/DeskSet.java</file>
+            <file>file:/home/beto/Documentos/AnalisisAlgoritmos/Hanoi/HanoiM/src/BackgroundFrame.java</file>
         </group>
     </open-files>
 </project-private>

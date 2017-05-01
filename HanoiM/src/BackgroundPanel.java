@@ -13,9 +13,17 @@ import java.awt.image.BufferedImage;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.font.*;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.apache.poi.xwpf.usermodel.ParagraphAlignment;
+import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.apache.poi.xwpf.usermodel.XWPFParagraph;
+import org.apache.poi.xwpf.usermodel.XWPFRun;
 
 
 
@@ -33,12 +41,9 @@ class BackgroundPanel extends JPanel implements MouseMotionListener, MouseListen
 	private  ImageIcon  diskimages[];
 	private  ImageIcon  diskshadows[];
 	private  ImageIcon  scaledBackground;
-//	private  Challenges challengeLog = new Challenges();
-	private  String     challengeString = "(Not Avalilable)";
-	
-	public   BackgroundFrame frame;
-	
-	private  boolean    isJar = true;
+        public   BackgroundFrame frame;
+        private  boolean    isJar = true;
+        
 	
 	
 	
@@ -134,9 +139,8 @@ class BackgroundPanel extends JPanel implements MouseMotionListener, MouseListen
 
 		/* draw text */
 		
-		g2d.drawString("Number of Moves: " + diskSet.getNumberOfMoves(), 10, 20);
-		g2d.drawString("Minimum Number of Moves: " + (int)(Math.pow(2, diskSet.getDiskCount()) - 1), 10, 45);
-		g2d.drawString("Challenge: " + challengeString, 10, 70);
+		g2d.drawString("Número de Movimientos: " + diskSet.getNumberOfMoves(), 10, 20);
+		g2d.drawString("Número mínimo de movimientos: " + (int)(Math.pow(2, diskSet.getDiskCount()) - 1), 10, 45);
 		
 		/* draw disks */
 
@@ -251,7 +255,8 @@ class BackgroundPanel extends JPanel implements MouseMotionListener, MouseListen
 	/* draw mouse dragging graphics for the selected disk */
 	
     public void mouseDragged(MouseEvent e){
-	
+	if(diskSet.getWon()==false)
+        {
         currentX = e.getX();
 		currentY = e.getY();
 		if(selectedDisk != null)
@@ -260,6 +265,8 @@ class BackgroundPanel extends JPanel implements MouseMotionListener, MouseListen
 			selectedDisk.setY(currentY);
 		}
 		repaint();
+        }
+        else return;
     }
 	
 	public void mouseClicked(MouseEvent e){
@@ -293,7 +300,11 @@ class BackgroundPanel extends JPanel implements MouseMotionListener, MouseListen
 		if(towerid < 0) towerid = 0;
 		else if(towerid >= diskSet.getTowerCount())towerid = diskSet.getTowerCount() - 1;
 		
-		diskSet.releaseDisk(selectedDisk, towerid);
+            try {
+                diskSet.releaseDisk(selectedDisk, towerid);
+            } catch (IOException ex) {
+                Logger.getLogger(BackgroundPanel.class.getName()).log(Level.SEVERE, null, ex);
+            }
 		selectedDisk = null;
 		
 		repaint();
@@ -301,7 +312,7 @@ class BackgroundPanel extends JPanel implements MouseMotionListener, MouseListen
 	
 	/* show "won" screen */
 	
-	public void showWon(){
+	public void showWon() throws IOException{
 		int w = 300, h = 200;
 			
 		JLabel label = new JLabel("Felicidades!");
@@ -321,13 +332,57 @@ class BackgroundPanel extends JPanel implements MouseMotionListener, MouseListen
             public void actionPerformed(ActionEvent e)
             {
                 wonWindow.dispose();
+                
             }
         });  
 		
 		wonWindow.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE );
 		wonWindow.setVisible(true); 
-		
-//		challengeLog.setChallenges(diskSet.getDiskCount(), diskSet.getNumberOfMoves(), "");
+                
+               /* File archivo = new File("Reporte.txt");
+                FileWriter writer = new FileWriter(archivo,true);
+                writer.append("Número de movimientos: "+diskSet.getNumberOfMoves()+"\n");
+                writer.flush();
+                writer.close();*/
+               
+              /*Implementamos un JFileChooser para elegir dónde se 
+               va a guardar el archivo de Reporte*/
+               /*http://www.java2s.com/Tutorial/Java/0240__Swing/UsingJFileChooser.htm*/
+               JFileChooser archivador = new JFileChooser();
+                int returnValue=archivador.showSaveDialog(null);
+                 if (returnValue == JFileChooser.APPROVE_OPTION) {
+                File selectedFile = archivador.getSelectedFile();
+                System.out.println(selectedFile.getName());
+                }
+                /*Se está usando la API APACHE POI para escribir documentos en Word.
+               Los .jar se encuentran el la carpeta poi-3.16 
+               */
+               XWPFDocument documento = new XWPFDocument();
+               File archivo = new File(""+archivador.getSelectedFile()+".docx");
+               /*Parece que APACHE POI solo trabaja con FileOutputStream*/
+              FileOutputStream out =  new FileOutputStream(archivo,true);
+               
+              /*Creamos el párrafo*/             
+              
+              XWPFParagraph parrafo = documento.createParagraph();
+              parrafo.setAlignment(ParagraphAlignment.CENTER);
+              XWPFRun run =parrafo.createRun();//Los run permiten ingresar textos al documento
+              run.setText("Informe de Reporte Psicológico \n");
+              run.setCapitalized(true);
+              run.setBold(true);
+              run.addBreak();
+              
+              XWPFParagraph parrafo2=documento.createParagraph();
+              parrafo2.setAlignment(ParagraphAlignment.LEFT);
+              XWPFRun run2=parrafo2.createRun();
+              run2.setText("Número de movimientos Realizados: "+diskSet.getNumberOfMoves());
+              
+              
+               documento.write(out);
+               out.close();
+                                 
+         	
+	
 	}
 
 	/* get background width */
@@ -344,7 +399,5 @@ class BackgroundPanel extends JPanel implements MouseMotionListener, MouseListen
 	
 	/* get challenge string (number of moves/"not available") */
 	
-	private String getChallengeString(){
-		return challengeString;
-	}
+	
 }

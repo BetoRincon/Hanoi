@@ -11,7 +11,10 @@
 import java.awt.*;
 import javax.swing.*;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 class DiskSet
 {
@@ -254,13 +257,17 @@ class DiskSet
 	/* release a disk to a tower */
         /*El siguiente mètodo es el que cambia los discos de una torre a otra*/
 	
-	public void releaseDisk(Disk disk, int towerid){
+	public void releaseDisk(Disk disk, int towerid) throws IOException{
             /*Ojo: a mayor Id menor el diámetro del disco*/
             
             /*El towerid es el id de la torre de destino*/
 		int pos = 0;
 		int diskid = getDiskID(disk);//capturamos el ID del disco cuado se suelta en la torre
-		
+	 if(getWon()==true){
+             return;
+         }
+         else{  
+             
                 /* si el valor de la torre donde estoy es igual al de la torre
                 de destino para que  no haga nada*/
                 
@@ -279,14 +286,14 @@ class DiskSet
 		/* este ciclo me ilustra en consola como estan las torres
                 antes de cambiar el disco a la torre destino*/
 		
-		for(int i=0; i<towerCount; i++){
+		/*for(int i=0; i<towerCount; i++){
                     System.out.println("$$$$-$$$$");
 			for(int j=0; j<diskCount; j++){
 					System.out.println(diskPositions[i][j]);
 			}
 			System.out.println("$$$$");
 		}
-		System.out.println("$$$$-$$$$");
+		System.out.println("$$$$-$$$$");*/
 		
 		
                 
@@ -327,19 +334,20 @@ class DiskSet
 		
 		//[dump]
 		
-		for(int i=0; i<towerCount; i++){
+		/*for(int i=0; i<towerCount; i++){
                     System.out.println("####-####");
 			for(int j=0; j<diskCount; j++){
 					System.out.println(diskPositions[i][j]);
 			}
 			System.out.println("####");
 		}
-		System.out.println("####-####");
+		System.out.println("####-####");*/
 		
 		
 		
 		if(!solveRunning)
 			if(getWon() == true) back.showWon();
+         }
 	}
 	
 	
@@ -353,7 +361,7 @@ class DiskSet
 	
 	/* move disk from a tower to another */
 	
-	public void movedisk(int sourceTower, int destinationTower){
+	public void movedisk(int sourceTower, int destinationTower) throws IOException{
 		releaseDisk(getTopDisk(sourceTower), destinationTower);
 	}
 
@@ -361,7 +369,7 @@ class DiskSet
 	/* solving method */
         
 	
-	void dohanoi(int n, int t, int f, int u){
+	void dohanoi(int n, int t, int f, int u) throws IOException{
 	/* el primer if se ejecuta cuando se termina de resolver
             el juego*/
 		if(solveTerminate == true){
@@ -458,7 +466,11 @@ class DiskSet
 
 		public void run() {
 			solveRunning = true;
-			dohanoi(diskCount, 3, 1, 2);
+                    try {
+                        dohanoi(diskCount, 3, 1, 2);
+                    } catch (IOException ex) {
+                        Logger.getLogger(DiskSet.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                          /*-----------------------------------------------------------------------------------*/
                           /*Se agrego esta parte para que cuando se solucione atumáticamente, también muestre 
                          una aviso */
