@@ -35,6 +35,7 @@ class BackgroundPanel extends JPanel implements MouseMotionListener, MouseListen
 	private  ImageIcon  disk[];
 	private  ImageIcon  shadow;
 	private  int        currentX, currentY;
+        private double tiempoT,tiempoMov;
 	public   DiskSet    diskSet;
 	private  Disk       selectedDisk = null;
 	private  int        diskImageCount = 6;
@@ -42,8 +43,16 @@ class BackgroundPanel extends JPanel implements MouseMotionListener, MouseListen
 	private  ImageIcon  diskshadows[];
 	private  ImageIcon  scaledBackground;
         public   BackgroundFrame frame;
-        private  boolean    isJar = true;
-        
+        private  boolean    aux = false;
+        private TimerListener timerListener;
+        private  Timer timerTotal = new Timer(1000, new TimerListener("Tiempo total"));
+        private Timer timerMov = new Timer(1000, new TimerListener("Tiempo entre movimientos"));
+        private Timer timer;
+        public static String informeTiempoTotal; /*se debe crear de tipo static para asociarla con la clase 
+                                        en vez de con el objeto 
+                                      ref-> http://docs.oracle.com/javase/tutorial/java/javaOO/classvars.html*/
+        public static String informeTiempoMov;
+        private JLabel tiempo;
 	
 	
 	
@@ -75,7 +84,7 @@ class BackgroundPanel extends JPanel implements MouseMotionListener, MouseListen
 		}else{*/
 		
                 /*El siguiente bloque asigna una imagen a cada disco para que sea graficada*/
-			icon    = new ImageIcon(getClass().getResource("Images/background.png"));
+			icon    = new ImageIcon(getClass().getResource("Images/fondo.png"));
 			disk[0] = new ImageIcon(getClass().getResource("Images/disk-orange.png"));
 			disk[1] = new ImageIcon(getClass().getResource("Images/disk-purple.png"));
 			disk[2] = new ImageIcon(getClass().getResource("Images/disk-green.png"));
@@ -92,6 +101,9 @@ class BackgroundPanel extends JPanel implements MouseMotionListener, MouseListen
 		
 		addMouseMotionListener(this);
 		addMouseListener(this);
+                
+               
+                
 	}
 	
 	
@@ -134,13 +146,11 @@ class BackgroundPanel extends JPanel implements MouseMotionListener, MouseListen
 		scaledBackground.paintIcon(this, g, 0, 0);
 		
 		/* set text antialiasing */
-		
-		g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+		/*cuadra el texto*/
+		//g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 
-		/* draw text */
 		
-		g2d.drawString("Número de Movimientos: " + diskSet.getNumberOfMoves(), 10, 20);
-		g2d.drawString("Número mínimo de movimientos: " + (int)(Math.pow(2, diskSet.getDiskCount()) - 1), 10, 45);
+                
 		
 		/* draw disks */
 
@@ -184,20 +194,26 @@ class BackgroundPanel extends JPanel implements MouseMotionListener, MouseListen
 		/* remove cached references if necessary */
 		
 		if(diskimages[diskid] != null){
-			if(diskimages[diskid].getIconWidth() != disk.getWidth())
+			if(diskimages[diskid].getIconWidth() != disk.getWidth()&&diskshadows[diskid].getIconWidth() != disk.getShadowWidth())
 			{
 				//if(diskimages[diskid] != null) diskimages[diskid].dispose();
+                                diskshadows[diskid] = null;
 				diskimages[diskid] = null;
 			}
 		}
 			
-		if(diskimages[diskid] != null){
-			if(diskshadows[diskid].getIconWidth() != disk.getShadowWidth())
-			{
-				//if(diskshadows[diskid] != null) diskshadows[diskid].dispose();
-				diskshadows[diskid] = null;
-			}
-		}
+                /*el siguiente if era el causante de que no se escalara la imagen de las 
+                sombras cuando se disminuía la ventana
+                
+                CORREGIDO*/
+//		if(diskimages[diskid] != null){
+//			if(diskshadows[diskid].getIconWidth() != disk.getShadowWidth())
+//			{
+//				//if(diskshadows[diskid] != null) diskshadows[diskid].dispose();
+//                            /*la siguiente linea hace que las sombras se adapten*/
+//				diskshadows[diskid] = null;
+//			}
+//		}
 		
 		/* if cached version of the disk/shadow ain't available, create
 		   a new version through scaling */
@@ -269,23 +285,38 @@ class BackgroundPanel extends JPanel implements MouseMotionListener, MouseListen
         else return;
     }
 	
-	public void mouseClicked(MouseEvent e){
+	public void mouseClicked(MouseEvent e)
+        {
+            
 	}
 
-	public void mouseEntered(MouseEvent e){
+	public void mouseEntered(MouseEvent e)
+        {
+            
 	}
 
-	public void mouseExited(MouseEvent e){
+	public void mouseExited(MouseEvent e)
+        {
+            
 	}
 	
 	
 	/* mouse click, select a disk */
 
 	public void mousePressed(MouseEvent e){
+          
 		int towerid = e.getX() / diskSet.getTowerWidth();
 		if(towerid >= 0 && towerid < diskSet.getTowerCount())
 		{
-			selectedDisk = diskSet.getTopDisk(towerid);
+                    
+                    selectedDisk = diskSet.getTopDisk(towerid);
+                    timerMov.start();
+                    if(aux==false){
+                        timerTotal.start();
+                       
+                    } 
+                    else return;
+                    aux=true;
 		}
 	}
 	
@@ -306,24 +337,27 @@ class BackgroundPanel extends JPanel implements MouseMotionListener, MouseListen
                 Logger.getLogger(BackgroundPanel.class.getName()).log(Level.SEVERE, null, ex);
             }
 		selectedDisk = null;
-		
+		timerMov.stop();
+              
 		repaint();
 	}
 	
 	/* show "won" screen */
 	
 	public void showWon() throws IOException{
-		int w = 300, h = 200;
-			
-		JLabel label = new JLabel("Felicidades!");
-		JButton button = new JButton("OK");
+		int w = 300, h = 150;
+                timerTotal.stop();
+                timerMov.stop();
+                
+                JLabel label = new JLabel("Prueba Finalizada");
+		JButton button = new JButton("Continuar");
 		
-		final JDialog wonWindow = new JDialog(frame, "Winner!", true);
+		final JDialog wonWindow = new JDialog(frame, "Torres de Hanoi", true);
 		Point center = GraphicsEnvironment.getLocalGraphicsEnvironment().getCenterPoint();
 
 		wonWindow.setLayout(null);
-		label.setBounds(100, 20, 100, 100);
-		button.setBounds(95, 120, 100, 25);
+		label.setBounds(80, 0, 200, 100);
+		button.setBounds(45, 70, 200, 25);
 		wonWindow.add(label);
 		wonWindow.add(button);
 		wonWindow.setBounds(center.x - w / 2, center.y - h / 2, w, h);
@@ -335,8 +369,7 @@ class BackgroundPanel extends JPanel implements MouseMotionListener, MouseListen
                 
             }
         });  
-		
-		wonWindow.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE );
+                wonWindow.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE );
 		wonWindow.setVisible(true); 
                 
                /* File archivo = new File("Reporte.txt");
@@ -348,12 +381,14 @@ class BackgroundPanel extends JPanel implements MouseMotionListener, MouseListen
               /*Implementamos un JFileChooser para elegir dónde se 
                va a guardar el archivo de Reporte*/
                /*http://www.java2s.com/Tutorial/Java/0240__Swing/UsingJFileChooser.htm*/
+               
                JFileChooser archivador = new JFileChooser();
                 int returnValue=archivador.showSaveDialog(null);
                  if (returnValue == JFileChooser.APPROVE_OPTION) {
                 File selectedFile = archivador.getSelectedFile();
                 System.out.println(selectedFile.getName());
                 }
+                 
                 /*Se está usando la API APACHE POI para escribir documentos en Word.
                Los .jar se encuentran el la carpeta poi-3.16 
                */
@@ -367,7 +402,7 @@ class BackgroundPanel extends JPanel implements MouseMotionListener, MouseListen
               XWPFParagraph parrafo = documento.createParagraph();
               parrafo.setAlignment(ParagraphAlignment.CENTER);
               XWPFRun run =parrafo.createRun();//Los run permiten ingresar textos al documento
-              run.setText("Informe de Reporte Psicológico \n");
+              run.setText("Análisis estadístico de las Torres de Hanoi \n");
               run.setCapitalized(true);
               run.setBold(true);
               run.addBreak();
@@ -376,14 +411,38 @@ class BackgroundPanel extends JPanel implements MouseMotionListener, MouseListen
               parrafo2.setAlignment(ParagraphAlignment.LEFT);
               XWPFRun run2=parrafo2.createRun();
               run2.setText("Número de movimientos Realizados: "+diskSet.getNumberOfMoves());
+              run2.addBreak();
+              run2.setText("Número de Movimientos inválidos: "+(diskSet.getNumberOfMoves()-(int)(Math.pow(2, diskSet.getDiskCount()) - 1)));
+              run2.addBreak();
+              run2.setText("Tiempo total: "+informeTiempoTotal+" segundos");
+              run2.addBreak();
+              double TiempoMov = Double.parseDouble(informeTiempoMov);
+              run2.setText("Tiempo empleado durante los movimientos: "+TiempoMov+" segundos");
+              run2.addBreak();
+              double movimientos=(double)(diskSet.getNumberOfMoves());
+              double TiempoTotal=Double.parseDouble(informeTiempoTotal);
+              double TiempoPorMovimiento=movimientos/TiempoTotal;
+              System.out.println(movimientos+" / "+TiempoTotal);
+              run2.setText("Tiempo por movimiento: "+TiempoPorMovimiento+" mov/seg");
+              run2.addBreak();
+
+              documento.write(out);
+              out.close();
               
-              
-               documento.write(out);
-               out.close();
-                                 
-         	
-	
-	}
+            /*  Desktop desktop = Desktop.getDesktop();
+              if(archivo.exists()){
+                  try {
+                      desktop.open(archivo);
+                  } 
+                  catch (Exception e)
+                  {
+                      Logger.getLogger(BackgroundFrame.class.getName()).log(Level.SEVERE, null, e);
+                  }
+              }*/
+                
+                /*cerrar la ventana de juego una vez se ha guardado el archivo*/
+              // frame.terminarJuego();
+        }
 
 	/* get background width */
 	
@@ -396,8 +455,4 @@ class BackgroundPanel extends JPanel implements MouseMotionListener, MouseListen
 	public int getPanelHeight(){
 		return super.getHeight();
 	}
-	
-	/* get challenge string (number of moves/"not available") */
-	
-	
 }

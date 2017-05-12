@@ -12,6 +12,10 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.GraphicsEnvironment;
 import java.awt.*;
+import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class BackgroundFrame extends JFrame implements ActionListener
 {
@@ -36,13 +40,13 @@ public class BackgroundFrame extends JFrame implements ActionListener
 		super("Torres de Hanoi");
 		//se declara el menu superior en el cual podemos encontrar la lista de opciones o items mencionados
 		JMenuBar  bar = new JMenuBar();
-		JMenu     gameMenu  = new JMenu("Game");
-		JMenu     helpMenu  = new JMenu("Help");
-		newGame   = new JMenuItem("Start New");
-		solveGame = new JMenuItem("Solve");
-		setupGame = new JMenuItem("Preferences");
-		closeGame = new JMenuItem("Close");
-		aboutHelp = new JMenuItem("About");
+		JMenu     gameMenu  = new JMenu("Menú");
+		JMenu     helpMenu  = new JMenu("Ayuda");
+		newGame   = new JMenuItem("Comenzar test");
+		solveGame = new JMenuItem("¿Cómo se juega?");
+		setupGame = new JMenuItem("Preferencias");
+		closeGame = new JMenuItem("Cerrar");
+		aboutHelp = new JMenuItem("Acerca");
 		
 		//se da la orden de adicionar al frame cada una de las caracteristicas
 		//o items que necesitemos
@@ -57,8 +61,9 @@ public class BackgroundFrame extends JFrame implements ActionListener
 		setJMenuBar(bar);
 		//se declara la orden de escucha de cada uno de los metodos
 		newGame.addActionListener(this);
-		solveGame.addActionListener(this);
+		
 		setupGame.addActionListener(this);
+                solveGame.addActionListener(this);
 		closeGame.addActionListener(this);
 		aboutHelp.addActionListener(this);
 		
@@ -118,7 +123,7 @@ public class BackgroundFrame extends JFrame implements ActionListener
 			// por medio de esta se muestra en la interfaz la informacion ingrersada anteriormente
 			//"Disks: "+ t1
 			JLabel label = new JLabel("Disks: ");
-			JLabel label2 = new JLabel("Solve Delay (ms): ");
+			//JLabel label2 = new JLabel("Solve Delay (ms): ");
 			text1 = new JTextField(t1, 5);
 			text2 = new JTextField(t2, 5);
 			ok = new JButton("OK");
@@ -131,8 +136,8 @@ public class BackgroundFrame extends JFrame implements ActionListener
 			setupWindow.setLayout(new FlowLayout());
 			setupWindow.add(label);
 			setupWindow.add(text1);
-			setupWindow.add(label2);
-			setupWindow.add(text2);
+			//setupWindow.add(label2);
+			//setupWindow.add(text2);
 			setupWindow.add(ok);
 			
 			//aqui es donde se agrega la orden de los metodos que necersitan la orden "ok"
@@ -156,6 +161,10 @@ public class BackgroundFrame extends JFrame implements ActionListener
 		// en este apartado podemos ver que sucederia si oprimimos la a yuda del juegho
 		
 		if(event.getSource() == aboutHelp){
+                    
+                    /*Se comentó el siguiente bloque de código por considerarse innecesario*/
+                    
+                    /* ------------------INICIO DEL BLOQUE---------------------------------------
 		//se declara el tamaño del area que ocupa el menu al desplegarse
 			// en este caso es de 300px * 100px
 			int w = 300, h = 100;
@@ -173,6 +182,28 @@ public class BackgroundFrame extends JFrame implements ActionListener
 			aboutWindow.setBounds(center.x - w / 2, center.y - h / 2, w, h);
 			aboutWindow.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE );
 			aboutWindow.setVisible(true); 
+                    ------------------------------FIN DEL BLOQUE----------------------------------*/
+                    
+                    
+                        /*Creamos el archivo que abre la Historia de las torres*/
+                        File archivo = new File("Hanoi.odt");
+                        /*first check if Desktop is supported by Platform or not
+                            No se cree necesaria para Windows*/
+                        
+                      /*  if(!Desktop.isDesktopSupported())
+                        {
+                            System.out.println("Esta versi");
+                            return;
+                        }*/
+                      /*Se usa la clase desktop para abrir el word/openoffice con el archivo
+                      ref -> http://www.journaldev.com/864/java-open-file
+                      */
+                        Desktop desktop = Desktop.getDesktop();
+                        if(archivo.exists()) try {
+                            desktop.open(archivo);
+                        } catch (IOException ex) {
+                            Logger.getLogger(BackgroundFrame.class.getName()).log(Level.SEVERE, null, ex);
+                        }
 
 		}
 		
@@ -187,5 +218,10 @@ public class BackgroundFrame extends JFrame implements ActionListener
 			setupWindow.dispose();
 		}
 	} 
+        
+        public void terminarJuego()
+        {
+            this.dispose();
+        }                
 	  
 }

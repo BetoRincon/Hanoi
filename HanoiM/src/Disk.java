@@ -48,7 +48,7 @@ class Disk
 		
 		x = (10+ (diskSet.getTowerWidth()/2) -(w/2) ) + (diskSet.getTowerIndex(this) * diskSet.getTowerWidth());
                                     /*x = (5 + (diskSet.getTowerWidth() / 2) - (w / 2)) + (diskSet.getTowerIndex(this) * diskSet.getTowerWidth());*/
-		          System.out.println("x: "+x);
+		         // System.out.println("x: "+x);
 		y = -(maxDiskSize - h) / 2;
 		y += (diskSet.getPanelHeight() - w - 10) - (diskSet.getRowPosition(this) - (h / 3));
 		
